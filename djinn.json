@@ -1,0 +1,14 @@
+{
+  "registry_url": "__bundled__",
+  "style": "new-york",
+  "tailwind": {
+    "config": "tailwind.config.js",
+    "css": "static/css/base.css",
+    "cssVariables": true
+  },
+  "aliases": {
+    "components": "templates/components",
+    "utils": "theme/templatetags"
+  },
+  "registries": {}
+}

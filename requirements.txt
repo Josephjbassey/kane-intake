@@ -1,0 +1,20 @@
+# Core Django & Server
+django>=5.1.0,<6.2.0
+python-dotenv>=1.0.0
+asgiref>=3.8.0
+sqlparse>=0.5.0
+
+# UI & Scaffolding Engine (Djinn UI)
+djinn-ui==0.1.12
+mcp>=1.28.1,<2.0.0
+tailwind-merge>=0.3.3
+tabulate>=0.9.0
+click>=8.1.7
+requests>=2.31.0
+
+# Document & Image Processing
+pillow>=10.0.0
+reportlab>=4.0.0
+
+# Security Auditing
+pip-audit>=2.8.0
