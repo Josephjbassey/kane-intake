@@ -1,0 +1,23 @@
+{
+  "vendor_name": "Lagos Freight & Logistics Ltd",
+  "invoice_number": "INV-2026-1113",
+  "invoice_date": "13 Nov 2026",
+  "currency": "₦",
+  "total_amount": "12,500.00",
+  "formatted_total": "₦12,500.00",
+  "items": [
+    {
+      "description": "Inter-State Freight Haulage (Lagos -> Abuja)",
+      "quantity": 1,
+      "unit_price": "8,500.00",
+      "total": "8,500.00"
+    },
+    {
+      "description": "Secure Pallet Warehousing & Handling",
+      "quantity": 1,
+      "unit_price": "4,000.00",
+      "total": "4,000.00"
+    }
+  ],
+  "verification_target": "verify the total shows ₦12,500"
+}

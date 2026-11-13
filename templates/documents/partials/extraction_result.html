@@ -1,0 +1,6 @@
+{% include 'documents/partials/extraction_card.html' with doc=doc %}
+
+<!-- Out-of-band swap to update recent documents table -->
+<div id="documents-table-container" hx-swap-oob="true" class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+    {% include 'documents/partials/documents_table.html' with documents=documents %}
+</div>

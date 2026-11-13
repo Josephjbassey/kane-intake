@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load djinn_button djinn_badge djinn_alert djinn_card %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Hero / Pitch Header -->
+    <div class="border-b border-slate-200 pb-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                    Document Digitization Intake Agent
+                </h1>
+                <p class="mt-1 text-sm text-slate-500 max-w-3xl">
+                    Accepts invoices and receipts, extracts structured data via an AI agent, and uses
+                    <span class="font-semibold text-slate-700">Kane CLI</span> in a closed verification loop
+                    to confirm end-to-end correctness in real Chrome.
+                </p>
+            </div>
+            <!-- Quick Actions -->
+            <div class="flex items-center gap-3">
+                <form hx-post="{% url 'load_mock_invoice' %}" hx-target="#extraction-container" hx-swap="innerHTML">
+                    {% csrf_token %}
+                    <button type="submit"
+                            id="btn-load-mock"
+                            class="inline-flex items-center justify-center rounded-md text-sm font-medium h-10 px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 shadow-sm transition-all active:scale-95">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Run Mock Invoice Flow (₦12,500)
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Workspace Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Left: Upload & Test Controls (5 cols) -->
+        <div class="lg:col-span-5 space-y-6">
+            <!-- Upload Card -->
+            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-base font-semibold text-slate-900 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        Upload Document
+                    </h2>
+                    <span class="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono">PDF / PNG / JPG</span>
+                </div>
+
+                <form hx-post="{% url 'upload_document' %}"
+                      hx-target="#extraction-container"
+                      hx-swap="innerHTML"
+                      enctype="multipart/form-data"
+                      class="space-y-4">
+                    {% csrf_token %}
+                    
+                    <div class="border-2 border-dashed border-slate-200 hover:border-slate-400 rounded-lg p-6 text-center transition-colors cursor-pointer bg-slate-50/50">
+                        <input type="file" name="file" id="file-upload" class="hidden" accept=".pdf,.png,.jpg,.jpeg" onchange="document.getElementById('file-label').textContent = this.files[0] ? this.files[0].name : 'Choose file';">
+                        <label for="file-upload" class="cursor-pointer flex flex-col items-center">
+                            <svg class="w-8 h-8 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <span id="file-label" class="text-sm font-medium text-slate-700">Click to select invoice PDF or image</span>
+                            <span class="text-xs text-slate-400 mt-1">Up to 10MB per file</span>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" name="simulate_bug" id="simulate_bug" value="true" class="rounded border-slate-300 text-slate-900 focus:ring-slate-900">
+                            <label for="simulate_bug" class="text-xs text-amber-700 font-medium">Plant bug (test closed-loop fix)</label>
+                        </div>
+                        <button type="submit"
+                                id="btn-submit-upload"
+                                class="inline-flex items-center justify-center rounded-md text-sm font-medium h-9 px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 transition-all">
+                            Extract Data
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Closed Loop Verification Info Card -->
+            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                        <span class="flex h-2 w-2 rounded-full bg-blue-600"></span>
+                        Closed-Loop Verification Architecture
+                    </h3>
+                    <span class="text-[11px] font-mono text-slate-500">Kane CLI ⟷ Coding Agent</span>
+                </div>
+                <div class="text-xs text-slate-600 space-y-2 leading-relaxed">
+                    <p>
+                        <strong>1. Test Execution:</strong> Kane CLI verifies live page state in real Chrome:
+                        <code class="block mt-1 p-2 bg-slate-100 rounded text-slate-800 font-mono text-[11px]">
+                            kane-cli run "Go to http://localhost:8000, verify the total shows ₦12,500" --agent --headless
+                        </code>
+                    </p>
+                    <p>
+                        <strong>2. Evidence Capture:</strong> If assertion fails (e.g. planted bug formats ₦1,250), Kane captures logs & screenshots.
+                    </p>
+                    <p>
+                        <strong>3. Coding Agent Self-Correction:</strong> The coding agent parses the failure, fixes <code class="font-mono text-slate-700">documents/services.py</code>, and reruns Kane CLI until pass (code 0).
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Live Extraction & Verification Results (7 cols) -->
+        <div class="lg:col-span-7" id="extraction-container">
+            {% if latest_doc %}
+                {% include 'documents/partials/extraction_card.html' with doc=latest_doc %}
+            {% else %}
+                <div class="rounded-xl border border-slate-200 bg-white p-12 text-center shadow-sm space-y-4">
+                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-semibold text-slate-900">No documents processed yet</h3>
+                        <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                            Upload an invoice or click <strong>"Run Mock Invoice Flow"</strong> to see AI extraction and Kane CLI verification in action.
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recent Documents Table -->
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden" id="documents-table-container">
+        {% include 'documents/partials/documents_table.html' with documents=documents %}
+    </div>
+</div>
+{% endblock %}

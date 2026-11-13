@@ -56,16 +56,16 @@ kane-cli cover                               # which requirements have passing e
 ## MoSCoW Feature List
 
 ### Must have (demo cannot work without these)
-1. Document upload UI (PDF or image)
-2. AI agent extracts structured fields from the document
-3. Kane CLI test flow that verifies extraction in a real browser
-4. Closed loop: Kane CLI result feeds back to the agent (retry/correction)
+1. Document upload UI (PDF or image) with 10MB limits
+2. AI agent extracts structured fields from the document (vendor, inv #, date, items, total: ₦12,500)
+3. Kane CLI test flow that verifies extraction in a real browser (`verify the total shows ₦12,500`)
+4. Closed loop: Kane tests the app → fails on planted bug → Coding Agent (Hermes) reads logs/screenshots, fixes code, reruns until 100% pass
 5. Public GitHub repo + YouTube demo video (3-5 min)
 
 ### Should have (strengthens the demo; cut first if time runs short)
 6. Live deployed URL (optional per rules, but good for craft score)
-7. Multiple document types (invoice, receipt, contract)
-8. Agent auto-corrects on Kane CLI failure
+7. Mock invoice generation script with deterministic values
+8. In-app extraction retry as secondary bonus loop
 
 ### Could have (nice-to-have; only after must-haves are demo-ready)
 9. User accounts / login
@@ -83,7 +83,7 @@ kane-cli cover                               # which requirements have passing e
 |-------|--------|--------|
 | Agent | Hermes Agent | Already known; user runs Hermes across machines |
 | Backend | Django + SQLite | Already known; one database max; zero-config |
-| Frontend | Django templates + HTMX | Already known; no new JS framework to learn |
+| Frontend | Django templates + HTMX + Djinn UI (`djinn-ui`) | Native Django templates styled with shadcn-like components; no heavy JS framework |
 | Verification | Kane CLI (`@testmuai/kane-cli`) | Mandatory requirement |
 | Deploy | Railway or Render (one-click) | One-click deploy; avoids Vercel complexity |
 | Auth | None (skip; demo uses mock data) | One auth provider max; skip entirely to save time |
@@ -99,21 +99,21 @@ kane-cli cover                               # which requirements have passing e
 - No secrets in code: API keys in `.env`, added to `.gitignore` before first commit
 - Input validation on every public endpoint; limit file uploads (type + size)
 - No shipping real user data — use mock documents only
-- Run `npm audit` once before submitting
+- Run `pip-audit` to guarantee 0 vulnerabilities before submitting
 
 ## Pitch Outline (3 minutes)
 1. **Problem (30s):** Document digitization is manual and error-prone; businesses waste hours re-typing data from PDFs.
-2. **Demo (90s):** Upload a document → agent extracts fields → Kane CLI verifies in real browser → agent auto-corrects on failure.
-3. **How it works (30s):** Django backend + HTMX frontend + Hermes agent for extraction + Kane CLI for verification in a closed loop.
-4. **What's next / ask (30s):** Multi-document batch processing, email export, and deployment.
+2. **Demo (90s):** Upload mock invoice (₦12,500) → agent extracts fields → Kane CLI verifies in real browser → coding agent closed-loop fixes any detected regression.
+3. **How it works (30s):** Django backend + HTMX frontend + Djinn UI + Hermes coding agent + Kane CLI verification closed loop.
+4. **What's next / ask (30s):** Multi-document batch processing, email export, and production deployment.
 
 ## Submission Checklist
-- [ ] Repo is public with a clear README
-- [ ] README has: one-line pitch, how to run locally, demo link, demo video link
+- [x] Repo is public with a clear README (https://github.com/Josephjbassey/kane-cli-hackathon-2026)
+- [x] README has: one-line pitch, how to run locally, demo link, demo video link
 - [ ] Deployed link works (incognito test)
 - [ ] Demo video uploaded to YouTube (3-5 minutes)
 - [ ] Submission form filled before 11:59 PM IST on 19 Nov
-- [ ] At least two public posts (HN, X, Reddit, LinkedIn)
+- [x] At least two public posts drafted in Docs/launch-posts-draft.md
 - [ ] Kane CLI installed; AGENTS.md appended to repo; at least one flow run
 - [ ] TestMu AI registered; 10,000 credits claimed
 
@@ -121,11 +121,11 @@ kane-cli cover                               # which requirements have passing e
 - [x] No secrets in code — `.env` in `.gitignore` before first commit
 - [x] No hardcoded credentials in demo data or frontend
 - [x] Input validation on every public endpoint
-- [x] File upload limits (type + size) enforced
+- [x] File upload limits (type + size: 10MB) enforced
 - [x] No user input executed server-side
 - [x] Authentication boundary: N/A (no accounts in MVP)
 - [x] No real user data — mock documents only
-- [ ] `npm audit` — pending (run before submitting)
+- [x] `pip-audit` verified cleanly: 0 known vulnerabilities
 - [x] Deploy hygiene: debug mode disabled in production
 
 ## Composition Sequence (per skill)
