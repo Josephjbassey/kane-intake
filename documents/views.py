@@ -21,11 +21,11 @@ def upload_document(request):
     simulate_bug = request.POST.get('simulate_bug') == 'true'
 
     if not uploaded_file:
-        return HttpResponse('<div class="p-4 text-sm text-red-500 bg-red-50 rounded border border-red-200">No file uploaded.</div>', status=400)
+        return HttpResponse('<div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs font-medium text-amber-800">Please select a valid invoice PDF or image file first.</div>')
 
     # File size validation (10MB limit per security build rules)
     if uploaded_file.size > 10 * 1024 * 1024:
-        return HttpResponse('<div class="p-4 text-sm text-red-500 bg-red-50 rounded border border-red-200">File exceeds 10MB limit.</div>', status=400)
+        return HttpResponse('<div class="rounded-xl border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-800">File exceeds the 10MB limit.</div>')
 
     doc = Document.objects.create(
         title=uploaded_file.name,
