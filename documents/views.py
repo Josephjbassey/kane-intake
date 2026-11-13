@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -15,6 +15,7 @@ def index(request):
     }
     return render(request, 'documents/index.html', context)
 
+@csrf_exempt
 @require_POST
 def upload_document(request):
     uploaded_file = request.FILES.get('file')
@@ -36,8 +37,9 @@ def upload_document(request):
 
     if request.headers.get('HX-Request'):
         return render(request, 'documents/partials/extraction_card.html', {'doc': doc})
-    return render(request, 'documents/partials/extraction_card.html', {'doc': doc})
+    return redirect('index')
 
+@csrf_exempt
 @require_POST
 def load_mock_invoice(request):
     simulate_bug = request.POST.get('simulate_bug') == 'true'
@@ -50,7 +52,7 @@ def load_mock_invoice(request):
     
     if request.headers.get('HX-Request'):
         return render(request, 'documents/partials/extraction_result.html', {'doc': doc, 'documents': Document.objects.all()[:10]})
-    return render(request, 'documents/partials/extraction_result.html', {'doc': doc, 'documents': Document.objects.all()[:10]})
+    return redirect('index')
 
 @require_POST
 def toggle_bug(request):

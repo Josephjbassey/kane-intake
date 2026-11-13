@@ -12,7 +12,7 @@
         <div class="text-right">
             <span class="text-xs text-slate-500 block">Total Amount</span>
             <!-- Target for Kane CLI assertion: "verify the total shows ₦12,500" -->
-            <div id="extracted-total" data-testid="total-amount" class="text-3xl font-bold font-mono tracking-tight text-slate-900 mt-1">
+            <div id="extracted-total" data-testid="total-amount" aria-label="Extracted Total Amount" class="text-3xl font-bold font-mono tracking-tight text-slate-900 mt-1">
                 {{ doc.formatted_total }}
             </div>
         </div>
@@ -81,7 +81,7 @@
             </div>
         </div>
         <span class="text-xs px-2.5 py-1 rounded bg-white border border-slate-200 font-mono text-slate-700">
-            Target: ₦12,500.00
+            Extraction Checkpoint
         </span>
     </div>
 </div>

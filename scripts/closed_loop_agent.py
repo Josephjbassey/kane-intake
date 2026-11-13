@@ -181,7 +181,7 @@ def main():
         print("!" * 70)
         sys.exit(2)
 
-    objective = "Go to http://127.0.0.1:8000, click on Run Mock Invoice Flow (₦12,500), and verify the total shows ₦12,500"
+    objective = "Click on 'Run Mock Invoice Flow (₦12,500)', and verify the total shows ₦12,500"
 
     try:
         # Phase 1: Inject Planted Bug

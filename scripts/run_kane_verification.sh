@@ -25,7 +25,8 @@ fi
 
 echo "[*] Executing real Kane CLI run..."
 KANE_CLI_USER_AGENT=hermes kane-cli run \
-  "Go to ${BASE_URL}, click on Run Mock Invoice Flow (₦12,500), and verify the total shows ₦12,500" \
+  "Click on 'Run Mock Invoice Flow (₦12,500)', and verify the total shows ₦12,500" \
+  --url "${BASE_URL}" \
   --agent \
   --headless \
   --timeout 120
