@@ -12,7 +12,7 @@
 > 
 > When Kane runs browser-level quality assertions (e.g. verifying invoice line-items & totals like ₦12,500 in real Chrome) and catches an extraction bug, Hermes inspects the failure evidence, patches the code, and reruns until verified.
 > 
-> 🔗 Repo: https://github.com/Josephjbassey/kane-cli-hackathon-2026
+> 🔗 Repo: https://github.com/Josephjbassey/kane-intake
 > #KaneCLIHack #AIAgents #Django #WebDev #BuildInPublic
 
 ---
@@ -33,6 +33,6 @@
 > 
 > No mock tests. No slides. Real end-to-end browser verification.
 > 
-> 📦 Check out the open-source repo: https://github.com/Josephjbassey/kane-cli-hackathon-2026
+> 📦 Check out the open-source repo: https://github.com/Josephjbassey/kane-intake
 > 
 > #KaneCLI #TestMuAI #Python #SoftwareTesting #DevOps #AutonomousAgents

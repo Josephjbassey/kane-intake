@@ -2,7 +2,7 @@
   <h1>⚡ Kane Intake</h1>
   <p><strong>Document-Digitization Intake Agent with Closed-Loop Kane CLI Verification</strong></p>
   <p>
-    <a href="https://github.com/Josephjbassey/kane-cli-hackathon-2026"><img src="https://img.shields.io/badge/Verified%20with-Kane%20CLI-059669.svg" alt="Verified with Kane CLI"></a>
+    <a href="https://github.com/Josephjbassey/kane-intake"><img src="https://img.shields.io/badge/Verified%20with-Kane%20CLI-059669.svg" alt="Verified with Kane CLI"></a>
     <a href="https://pypi.org/project/djinn-ui/"><img src="https://img.shields.io/badge/UI-Djinn%20UI-1e293b.svg" alt="Djinn UI"></a>
     <a href="https://pypi.org/project/django/"><img src="https://img.shields.io/badge/Backend-Django%206.1-092e20.svg" alt="Django"></a>
     <a href="https://pypi.org/project/pip-audit/"><img src="https://img.shields.io/badge/Security-pip--audit%20Passed-10b981.svg" alt="pip-audit"></a>
@@ -66,8 +66,8 @@ Built specifically for the **TestMu AI Kane CLI Hackathon 2026**.
 
 ### 1. Clone & Set Up Virtual Environment
 ```bash
-git clone https://github.com/Josephjbassey/kane-cli-hackathon-2026.git
-cd kane-cli-hackathon-2026
+git clone https://github.com/Josephjbassey/kane-intake.git
+cd kane-intake
 
 python3 -m venv .venv
 source .venv/bin/activate

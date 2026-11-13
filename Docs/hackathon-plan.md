@@ -108,7 +108,7 @@ kane-cli cover                               # which requirements have passing e
 4. **What's next / ask (30s):** Multi-document batch processing, email export, and production deployment.
 
 ## Submission Checklist
-- [x] Repo is public with a clear README (https://github.com/Josephjbassey/kane-cli-hackathon-2026)
+- [x] Repo is public with a clear README (https://github.com/Josephjbassey/kane-intake)
 - [x] README has: one-line pitch, how to run locally, demo link, demo video link
 - [ ] Deployed link works (incognito test)
 - [ ] Demo video uploaded to YouTube (3-5 minutes)
