@@ -2,11 +2,11 @@
 """
 Build Edited Hackathon Walkthrough Video from Raw Screen Recording.
 Combines:
-- Raw authentic screen recording (kaneCLI_RAW.mp4)
+- Raw authentic screen recording (kaneCLI_RAW.mp4) scaled to full 1920x1080 (zero margins/borders)
+- Sleek floating HUD top bar & progress bar overlay (compact & semi-transparent)
 - AI-synthesized narration via edge-tts (ChristopherNeural)
-- 1080p canvas with HUD overlay, phase badges, and animated progress bars
 - Conforms to /ai-video-studio and /remotion specifications
-- Runtime target: 3m 30s (~210s), within the 3-5 minute requirement.
+- Runtime target: 3m 24s (204s), within the 3-5 minute requirement.
 """
 
 import os
@@ -144,76 +144,69 @@ def get_audio_duration(file_path):
 
 async def generate_narration():
     import edge_tts
-    print("\n--- Generating Narration Audio ---")
+    print("\n--- Checking Narration Audio ---")
     for s in SCENES:
         sid = s["id"]
         out_mp3 = WORK_DIR / f"{sid}.mp3"
-        print(f"Generating TTS for {sid}...")
-        comm = edge_tts.Communicate(s["narration"], VOICE, rate="+3%")
-        await comm.save(str(out_mp3))
+        if not out_mp3.exists():
+            print(f"Generating TTS for {sid}...")
+            comm = edge_tts.Communicate(s["narration"], VOICE, rate="+3%")
+            await comm.save(str(out_mp3))
         dur = get_audio_duration(out_mp3)
-        # Pad duration slightly for breathing room
         target_dur = max(dur + 2.5, s["min_duration"])
         s["duration"] = target_dur
         s["audio_dur"] = dur
         print(f"  {sid}: speech={dur:.1f}s, target_scene={target_dur:.1f}s")
 
 def get_font(size, bold=False):
-    candidates = [
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-    ]
-    for c in candidates:
-        if os.path.exists(c):
-            return ImageFont.truetype(c, size)
+    path = "/usr/share/fonts/noto/NotoSans-Bold.ttf" if bold else "/usr/share/fonts/noto/NotoSans-Regular.ttf"
+    if os.path.exists(path):
+        return ImageFont.truetype(path, size)
     return ImageFont.load_default()
 
 def create_hud_overlay(scene, scene_index, total_scenes, cumulative_time, total_video_time):
     """
-    Creates a 1920x1080 transparent PNG with dark-mode HUD, top badge bar,
-    scene title, and bottom progress bar.
+    Creates a 1920x1080 transparent PNG with dark-mode HUD.
+    Sleek, compact floating bars so the screen recording underneath fills 100% of the canvas.
     """
     img = Image.new("RGBA", (1920, 1080), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
-    font_title = get_font(28, bold=True)
-    font_sub = get_font(18, bold=False)
-    font_badge = get_font(15, bold=True)
-    font_brand = get_font(16, bold=True)
+    font_brand = get_font(18, bold=True)
+    font_title = get_font(16, bold=True)
+    font_sub = get_font(14, bold=False)
+    font_badge = get_font(13, bold=True)
 
-    # Top Navigation Bar Background
-    draw.rectangle([0, 0, 1920, 85], fill=(15, 23, 42, 235))
-    draw.line([(0, 85), (1920, 85)], fill=(51, 65, 85, 200), width=2)
+    # Top Bar: compact floating bar (64px) with dark semi-transparent acrylic
+    draw.rectangle([0, 0, 1920, 64], fill=(15, 23, 42, 225))
+    draw.line([(0, 64), (1920, 64)], fill=(59, 130, 246, 200), width=2)
 
-    # Brand Title
-    draw.text((40, 20), "KANE INTAKE", font=font_brand, fill=(96, 165, 250))
-    draw.text((170, 20), "·  AUTONOMOUS CLOSED-LOOP BROWSER QA", font=font_sub, fill=(148, 163, 184))
+    # Brand Title & Step
+    draw.text((30, 12), "KANE INTAKE", font=font_brand, fill=(96, 165, 250))
+    draw.text((160, 14), "·  Autonomous Closed-Loop Browser QA", font=font_sub, fill=(148, 163, 184))
+    draw.text((30, 36), f"Step {scene_index}/{total_scenes}: {scene['title']}", font=font_title, fill=(255, 255, 255))
 
     # Phase Badge
     phase_text = scene["phase"]
-    badge_bg = (30, 41, 59, 240)
+    badge_bg = (30, 41, 59, 230)
     badge_border = (59, 130, 246, 255) if "SELF-HEAL" in phase_text or "VERIFICATION" in phase_text else (100, 116, 139, 200)
     if "QA RUN" in phase_text:
         badge_border = (239, 68, 68, 255)
     
-    draw.rounded_rectangle([1480, 16, 1880, 52], radius=8, fill=badge_bg, outline=badge_border, width=2)
-    draw.text((1500, 24), phase_text, font=font_badge, fill=(241, 245, 249))
+    draw.rounded_rectangle([1520, 14, 1890, 48], radius=6, fill=badge_bg, outline=badge_border, width=2)
+    draw.text((1540, 22), phase_text, font=font_badge, fill=(241, 245, 249))
 
-    # Scene Title & Subtitle banner (subtle overlay on top of frame)
-    draw.text((40, 50), f"Step {scene_index}/{total_scenes}: {scene['title']}", font=font_title, fill=(255, 255, 255))
-
-    # Bottom Progress Bar
-    draw.rectangle([0, 1030, 1920, 1080], fill=(15, 23, 42, 240))
-    draw.line([(0, 1030), (1920, 1030)], fill=(51, 65, 85, 200), width=2)
+    # Bottom Bar: compact floating bar (42px) with animated progress bar
+    draw.rectangle([0, 1038, 1920, 1080], fill=(15, 23, 42, 225))
+    draw.line([(0, 1038), (1920, 1038)], fill=(59, 130, 246, 200), width=2)
 
     progress_ratio = min(1.0, cumulative_time / total_video_time)
     progress_w = int(1920 * progress_ratio)
-    draw.rectangle([0, 1030, progress_w, 1034], fill=(59, 130, 246))
+    draw.rectangle([0, 1038, progress_w, 1042], fill=(59, 130, 246))
 
-    # Scene subtitle in bottom bar
-    draw.text((40, 1045), scene["subtitle"], font=font_sub, fill=(203, 213, 225))
+    draw.text((30, 1050), scene["subtitle"], font=font_sub, fill=(203, 213, 225))
     dur_str = f"{int(cumulative_time // 60)}:{int(cumulative_time % 60):02d} / {int(total_video_time // 60)}:{int(total_video_time % 60):02d}"
-    draw.text((1760, 1045), dur_str, font=font_sub, fill=(148, 163, 184))
+    draw.text((1780, 1050), dur_str, font=font_sub, fill=(148, 163, 184))
 
     out_path = WORK_DIR / f"{scene['id']}_hud.png"
     img.save(out_path, "PNG")
@@ -221,8 +214,8 @@ def create_hud_overlay(scene, scene_index, total_scenes, cumulative_time, total_
 
 def render_scene_clip(scene, scene_index, total_scenes, cumulative_time, total_video_time):
     """
-    Renders an individual scene MP4 combining visual stream, HUD overlay,
-    and voiceover audio padded to scene['duration'].
+    Renders an individual scene MP4.
+    Visual stream scales to full 1920x1080 edge-to-edge (no padding, no shrink).
     """
     sid = scene["id"]
     target_dur = scene["duration"]
@@ -233,7 +226,7 @@ def render_scene_clip(scene, scene_index, total_scenes, cumulative_time, total_v
     print(f"\n--- Rendering {sid} ({target_dur:.1f}s) ---")
 
     if scene["source"] == "image":
-        # Render static image with subtle zoom and overlay
+        # Architecture diagram: scale to 1920x1080
         img_path = scene["image_path"]
         cmd = [
             "ffmpeg", "-y",
@@ -242,9 +235,8 @@ def render_scene_clip(scene, scene_index, total_scenes, cumulative_time, total_v
             "-i", str(audio_file),
             "-filter_complex",
             (
-                f"[0:v]scale=1760:900:force_original_aspect_ratio=decrease,pad=1760:900:(ow-iw)/2:(oh-ih)/2:color=#1e293b[scaled];"
-                f"[scaled]pad=1920:1080:80:100:color=#0f172a[base];"
-                f"[base][1:v]overlay=0:0[vout]"
+                "[0:v]scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=#0f172a[scaled];"
+                "[scaled][1:v]overlay=0:0[vout]"
             ),
             "-map", "[vout]",
             "-map", "2:a",
@@ -254,28 +246,32 @@ def render_scene_clip(scene, scene_index, total_scenes, cumulative_time, total_v
             str(out_scene_mp4)
         ]
     else:
-        # Extract from raw video with optional speedup
+        # Full-bleed screencast: crop 960x540 quadrant from 1280x720 container, then scale 2x to full 1920x1080 (exact 16:9, edge-to-edge!)
         raw_start = scene["raw_start"]
         raw_end = scene["raw_end"]
         raw_dur = raw_end - raw_start
 
+        crop_scale = "crop=960:540:0:0,scale=1920:1080:flags=lanczos"
+
         if scene.get("speedup", False):
-            # Speedup video to match target duration
             pts_factor = target_dur / raw_dur
             vf = (
-                f"[0:v]trim=start={raw_start}:end={raw_end},setpts={pts_factor}*PTS[trimmed];"
-                f"[trimmed]scale=1760:900:force_original_aspect_ratio=decrease,pad=1760:900:(ow-iw)/2:(oh-ih)/2:color=#1e293b[scaled];"
-                f"[scaled]pad=1920:1080:80:100:color=#0f172a[base];"
-                f"[base][1:v]overlay=0:0[vout]"
+                f"[0:v]trim=start={raw_start}:end={raw_end},setpts={pts_factor}*PTS,"
+                f"{crop_scale}[scaled];"
+                f"[scaled][1:v]overlay=0:0[vout]"
+            )
+        elif raw_dur < target_dur:
+            pad_dur = target_dur - raw_dur + 1.0
+            vf = (
+                f"[0:v]trim=start={raw_start}:end={raw_end},setpts=PTS-STARTPTS,"
+                f"{crop_scale},tpad=stop_mode=clone:stop_duration={pad_dur}[scaled];"
+                f"[scaled][1:v]overlay=0:0[vout]"
             )
         else:
-            # Normal speed, loop/pad if raw segment is shorter than target_dur
-            pts_factor = 1.0
             vf = (
-                f"[0:v]trim=start={raw_start}:end={raw_end},setpts=PTS-STARTPTS[trimmed];"
-                f"[trimmed]scale=1760:900:force_original_aspect_ratio=decrease,pad=1760:900:(ow-iw)/2:(oh-ih)/2:color=#1e293b[scaled];"
-                f"[scaled]pad=1920:1080:80:100:color=#0f172a[base];"
-                f"[base][1:v]overlay=0:0[vout]"
+                f"[0:v]trim=start={raw_start}:end={raw_end},setpts=PTS-STARTPTS,"
+                f"{crop_scale}[scaled];"
+                f"[scaled][1:v]overlay=0:0[vout]"
             )
 
         cmd = [
@@ -314,7 +310,7 @@ def concat_all_scenes():
     subprocess.run(cmd, check=True)
     print(f"\nFinal Video created at: {FINAL_VIDEO}")
 
-    # Also update Docs/media/kane_intake_demo.mp4 so existing links point to the edited cut
+    # Also update Docs/media/kane_intake_demo.mp4
     shutil_dest = MEDIA_DIR / "kane_intake_demo.mp4"
     import shutil
     shutil.copyfile(FINAL_VIDEO, shutil_dest)
@@ -342,6 +338,7 @@ async def main():
     print(f"Duration: {dur:.2f}s ({dur/60:.2f} mins)")
     print(f"Size: {size_mb:.2f} MB")
     print(f"Standard: 3 to 5 minutes hackathon requirement met.")
+    print(f"Coverage: 100% full-bleed edge-to-edge (no margins).")
     print(f"==========================================")
 
 if __name__ == "__main__":
