@@ -1,0 +1,21 @@
+{
+  "name": "kane-intake-video",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "remotion preview src/index.ts",
+    "render": "remotion render WalkthroughComposition ../Docs/media/kane_intake_remotion.mp4"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.260",
+    "@remotion/cli": "^4.0.260",
+    "@remotion/transitions": "^4.0.260"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "typescript": "^5.7.3"
+  }
+}

@@ -58,6 +58,8 @@ secrets/*.json
 
 # Node / Frontend assets build artifacts
 node_modules/
+video/node_modules/
+video/.remotion/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

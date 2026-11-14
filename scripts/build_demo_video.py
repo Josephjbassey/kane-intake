@@ -96,15 +96,17 @@ SCENES = [
     {
         "id": "scene6_self_heal",
         "title": "Hermes Coding Agent: Live Autonomous Self-Healing",
-        "subtitle": "Agent ingests failure report, patches services.py, and re-triggers Kane",
+        "subtitle": "Hermes Agent v0.23.0 ingests failure evidence, patches services.py, and reruns Kane CLI",
         "narration": (
-            "This is the heart of the hackathon challenge: closing the loop between the coding agent and Kane CLI. "
-            "Our Hermes coding agent was provided Kane CLI's failure report and CDP screenshots. "
-            "The agent inspected the service layer, located the arithmetic flaw in the quantity calculation, "
-            "and generated a surgical code fix to restore the correct 12,500 Naira total, without human intervention."
+            "Here is the Hermes agent side of the closed loop in action. "
+            "When Kane CLI fails, Hermes Agent is invoked with the failure context and CDP screenshots. "
+            "Hermes reasons through the error, uses its read file tool to inspect documents services dot py, "
+            "and pinpoints the arithmetic bug in the extraction logic. "
+            "Hermes then executes an edit file tool call to apply the surgical code patch, "
+            "and immediately triggers Kane CLI to re-verify the live application in Chrome."
         ),
-        "bg_image": None,
-        "type": "code_diff"
+        "bg_image": IMAGES_DIR / "5_hermes_agent_session.png",
+        "type": "diagram"
     },
     {
         "id": "scene7_convergence",

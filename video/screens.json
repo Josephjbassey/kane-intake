@@ -1,0 +1,68 @@
+{
+  "projectName": "Kane Intake",
+  "screens": [
+    {
+      "id": "1",
+      "title": "Autonomous Closed-Loop Architecture",
+      "description": "Django Monolith ⟷ Kane CLI in Chrome ⟷ Hermes Coding Agent",
+      "imagePath": "assets/screens/architecture_diagram.png",
+      "width": 1920,
+      "height": 1080,
+      "durationInFrames": 900
+    },
+    {
+      "id": "2",
+      "title": "Django 6 + HTMX + Djinn UI",
+      "description": "Accessible Tailwind components from PyPI with local zero-latency HTMX",
+      "imagePath": "assets/screens/1_homepage_clean.jpg",
+      "width": 1920,
+      "height": 1080,
+      "durationInFrames": 900
+    },
+    {
+      "id": "3",
+      "title": "Deterministic Ground-Truth Invoice Flow",
+      "description": "Invoice extraction with target assertion: 'the total shows ₦12,500'",
+      "imagePath": "assets/screens/3_verified_pass_12500.jpg",
+      "width": 1920,
+      "height": 1080,
+      "durationInFrames": 900
+    },
+    {
+      "id": "4",
+      "title": "Real Browser QA: Kane CLI in Headless Chrome",
+      "description": "CDP execution locating and clicking 'Run Mock Invoice Flow (₦12,500)'",
+      "imagePath": "assets/screens/2_kane_action_click.png",
+      "width": 1920,
+      "height": 1080,
+      "durationInFrames": 750
+    },
+    {
+      "id": "5",
+      "title": "What Kane Caught: ₦1,250 Deflation Bug",
+      "description": "Visual assertion failure: Expected ₦12,500.00, Found ₦1,250.00 (Exit Code 1)",
+      "imagePath": "assets/screens/4_kane_caught_bug_1250.png",
+      "width": 1920,
+      "height": 1080,
+      "durationInFrames": 900
+    },
+    {
+      "id": "6",
+      "title": "Hermes Coding Agent: Live Autonomous Self-Healing",
+      "description": "Hermes Agent v0.23.0 ingests failure evidence, patches services.py, and reruns Kane CLI",
+      "imagePath": "assets/screens/5_hermes_agent_session.png",
+      "width": 1920,
+      "height": 1080,
+      "durationInFrames": 960
+    },
+    {
+      "id": "7",
+      "title": "Convergence & Verification: 100% Pass in 48s",
+      "description": "Exit Code 0 (Passed) · TestMu AI Cloud Verified · pip-audit Clean (0 OSV issues)",
+      "imagePath": "assets/screens/3_verified_pass_12500.jpg",
+      "width": 1920,
+      "height": 1080,
+      "durationInFrames": 990
+    }
+  ]
+}
