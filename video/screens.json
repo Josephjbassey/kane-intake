@@ -57,8 +57,8 @@
     },
     {
       "id": "7",
-      "title": "Convergence & Verification: 100% Pass in 48s",
-      "description": "Exit Code 0 (Passed) · TestMu AI Cloud Verified · pip-audit Clean (0 OSV issues)",
+      "title": "Convergence & Verification: 100% Pass",
+      "description": "Passing rerun in 48.8s · TestMu AI Cloud Verified · pip-audit Clean (0 OSV issues)",
       "imagePath": "assets/screens/3_verified_pass_12500.jpg",
       "width": 1920,
       "height": 1080,
