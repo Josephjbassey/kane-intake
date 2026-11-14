@@ -66,3 +66,8 @@ yarn-error.log*
 
 # Video build intermediate files
 Docs/media/work/
+Docs/media/edited_work/
+Docs/media/raw_review/
+Docs/media/*.RAW.mp4
+Docs/media/kaneCLI_RAW.mp4
+Docs/media/*_work/
