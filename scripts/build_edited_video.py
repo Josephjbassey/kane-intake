@@ -146,27 +146,28 @@ def format_ass_time(seconds):
     return f"{h}:{m:02d}:{s:05.2f}"
 
 async def prepare_narration_and_subtitles():
-    import edge_tts
-    print("\n--- Generating Audio & Word-for-Word Burned-In Captions ---")
+    print("\n--- Checking Audio & Word-for-Word Burned-In Captions ---")
     for s in SCENES:
         sid = s["id"]
         mp3_path = WORK_DIR / f"{sid}.mp3"
         ass_path = WORK_DIR / f"{sid}.ass"
 
-        print(f"Synthesizing {sid} ({VOICE})...")
-        comm = edge_tts.Communicate(s["narration"], VOICE, rate="+2%")
-        events = []
-        with open(mp3_path, "wb") as f_mp3:
-            async for chunk in comm.stream():
-                if chunk["type"] == "audio":
-                    f_mp3.write(chunk["data"])
-                elif chunk["type"] == "SentenceBoundary":
-                    start = chunk["offset"] / 10_000_000.0
-                    end = (chunk["offset"] + chunk["duration"]) / 10_000_000.0
-                    events.append((start, end, chunk["text"].strip()))
+        if not (mp3_path.exists() and mp3_path.stat().st_size > 1000 and ass_path.exists() and ass_path.stat().st_size > 100):
+            import edge_tts
+            print(f"Synthesizing {sid} ({VOICE})...")
+            comm = edge_tts.Communicate(s["narration"], VOICE, rate="+2%")
+            events = []
+            with open(mp3_path, "wb") as f_mp3:
+                async for chunk in comm.stream():
+                    if chunk["type"] == "audio":
+                        f_mp3.write(chunk["data"])
+                    elif chunk["type"] == "SentenceBoundary":
+                        start = chunk["offset"] / 10_000_000.0
+                        end = (chunk["offset"] + chunk["duration"]) / 10_000_000.0
+                        events.append((start, end, chunk["text"].strip()))
 
-        with open(ass_path, "w", encoding="utf-8") as f_ass:
-            f_ass.write("""[Script Info]
+            with open(ass_path, "w", encoding="utf-8") as f_ass:
+                f_ass.write("""[Script Info]
 ScriptType: v4.00+
 PlayResX: 1920
 PlayResY: 1080
@@ -178,15 +179,17 @@ Style: Default,Noto Sans,24,&H00FFFFFF,&H000000FF,&H000F172A,&H80000000,1,0,0,0,
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """)
-            for st, en, s_text in events:
-                f_ass.write(f"Dialogue: 0,{format_ass_time(st)},{format_ass_time(en)},Default,,0,0,0,,{s_text}\n")
+                for st, en, s_text in events:
+                    f_ass.write(f"Dialogue: 0,{format_ass_time(st)},{format_ass_time(en)},Default,,0,0,0,,{s_text}\n")
+        else:
+            print(f"Using cached audio & subtitles for {sid}...")
 
         probe = subprocess.run([
             "ffprobe", "-v", "error", "-show_entries", "format=duration",
             "-of", "default=noprint_wrappers=1:nokey=1", str(mp3_path)
         ], capture_output=True, text=True)
         dur = float(probe.stdout.strip())
-        print(f"  {sid}: speech={dur:.2f}s, target_clip={s['duration']:.1f}s, captions={len(events)} lines")
+        print(f"  {sid}: speech={dur:.2f}s, target_clip={s['duration']:.1f}s")
 
 def get_font(size, bold=False):
     path = "/usr/share/fonts/noto/NotoSans-Bold.ttf" if bold else "/usr/share/fonts/noto/NotoSans-Regular.ttf"
